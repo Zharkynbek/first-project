@@ -56,6 +56,8 @@ function getCommentsFromLocal() {
 
 function renderComments() {
   const commentArr = getCommentsFromLocal();
+  refs.nameInput.value = '';
+  refs.commentInput.value = '';
   const markup = commentArr
     .map(el => {
       return `<li id="${el.id}">  
