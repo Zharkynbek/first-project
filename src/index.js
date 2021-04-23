@@ -1,6 +1,10 @@
 //AIzaSyCniRY8mOu8mbV8PRMWbZHKAGJrPGGPrL8
 
 import './styles.css';
+import { error } from '@pnotify/core';
+import '@pnotify/core/dist/PNotify.css';
+import '@pnotify/core/dist/BrightTheme.css';
+import debounce from 'lodash.debounce';
 
 const refs = {
   form: document.querySelector('.comment-form'),
@@ -8,6 +12,7 @@ const refs = {
   commentInput: document.querySelector('.comment'),
   commentsList: document.querySelector('.comments'),
   loginBtn: document.querySelector('.log-btn '),
+  formBtn: document.querySelector('.submit-form'),
 };
 
 function sendComments(comment) {
@@ -32,6 +37,18 @@ function sendComments(comment) {
 
 function sendRequest(e) {
   e.preventDefault();
+  if (refs.commentInput.value === '') {
+    error({
+      text: 'input is empty',
+      delay: 1000,
+    });
+    return;
+  }
+
+  if (refs.commentInput.value !== '') {
+    refs.form.enable;
+    refs.formBtn.classList.add('enable');
+  }
   const comment = {
     date: `${new Date(Date.now()).toLocaleDateString()} ${new Date(
       Date.now(),
@@ -42,7 +59,11 @@ function sendRequest(e) {
   sendComments(comment);
 }
 
-refs.form.addEventListener('submit', sendRequest);
+refs.form.addEventListener(
+  'submit',
+  debounce(sendRequest, 500, { leading: true, trailing: false }),
+  false,
+);
 
 function addToLocal(comment) {
   const commentsArr = getCommentsFromLocal();
