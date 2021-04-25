@@ -37,6 +37,15 @@ function sendComments(comment) {
 
 function sendRequest(e) {
   e.preventDefault();
+
+  if (refs.nameInput.value === '') {
+    error({
+      text: 'input is empty',
+      delay: 1000,
+    });
+    return;
+  }
+
   if (refs.commentInput.value === '') {
     error({
       text: 'input is empty',
@@ -45,10 +54,6 @@ function sendRequest(e) {
     return;
   }
 
-  if (refs.commentInput.value !== '') {
-    refs.form.enable;
-    refs.formBtn.classList.add('enable');
-  }
   const comment = {
     date: `${new Date(Date.now()).toLocaleDateString()} ${new Date(
       Date.now(),
