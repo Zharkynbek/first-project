@@ -40,7 +40,7 @@ function sendRequest(e) {
 
   if (refs.nameInput.value === '') {
     error({
-      text: 'input is empty',
+      text: 'input for name is empty',
       delay: 1000,
     });
     return;
@@ -48,7 +48,7 @@ function sendRequest(e) {
 
   if (refs.commentInput.value === '') {
     error({
-      text: 'input is empty',
+      text: 'input for comment is empty',
       delay: 1000,
     });
     return;
@@ -110,4 +110,30 @@ function deleteComment(e) {
   });
   localStorage.setItem('comments', JSON.stringify(filteredComments));
   renderComments();
+}
+
+refs.loginBtn.addEventListener('click', openModalLog);
+
+function openModalLog() {
+  // initialize modal element
+  var modalEl = document.createElement('div');
+  modalEl.classList.add('login');
+
+  // show modal
+  mui.overlay('on', modalEl);
+
+  const formMarkup = `<h1 class="title">Sign In</h1>
+  <form class="modal-form" action="submit">
+  <label class="label">
+  <p>Login</p>
+  <input type="text">
+  </label>
+  <label class="label">
+  <p>Password</p>
+  <input type="password">
+  </label>
+  <button class="button">Join</button>
+  </form>
+  `;
+  modalEl.innerHTML = formMarkup;
 }
