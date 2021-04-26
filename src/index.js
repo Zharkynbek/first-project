@@ -188,10 +188,10 @@ function logOut() {
     .querySelector('.comment-form')
     .addEventListener('submit', sendRequest);
   document.querySelector('.log-btn').addEventListener('click', openModalLog);
+  renderComments();
 
   document.querySelector('.delete').addEventListener('click', e => {
     console.log('hello');
     deleteComment(e);
   });
-  renderComments();
 }
