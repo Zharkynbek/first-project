@@ -1,0 +1,13 @@
+<div>
+    <h1>Comments</h1>
+    <button class="logout">LogOut</button>
+    <ol>
+        {{#each this}}
+        <li>
+            <h3>{{name}}</h3>
+            <p>{{date}}</p>
+            <p>{{comment}}</p>
+        </li>
+        {{/each}}
+    </ol>
+</div>
