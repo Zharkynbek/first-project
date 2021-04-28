@@ -99,7 +99,7 @@ function renderComments() {
   document.querySelector('.comments').innerHTML = markup;
 }
 
-window.addEventListener('load', renderComments);
+// window.addEventListener('load', renderComments);
 
 refs.commentsList.addEventListener('click', deleteComment);
 
