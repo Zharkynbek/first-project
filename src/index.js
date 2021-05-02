@@ -232,12 +232,13 @@ function getData(token) {
 
 function logOut() {
   document.body.innerHTML = mainPage();
+  window.addEventListener('load', renderComments);
   document
     .querySelector('.comment-form')
     .addEventListener('submit', sendRequest);
   document.querySelector('.log-btn').addEventListener('click', openModalLog);
   renderComments();
-
+  document.querySelector('.comments').addEventListener('click', deleteComment);
   document.querySelector('.delete').addEventListener('click', deleteComment);
   document.querySelector('.reg-btn').addEventListener('click', openRegForm);
 }
