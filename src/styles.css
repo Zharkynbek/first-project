@@ -16,6 +16,7 @@ body {
 }
 
 h1 {
+  margin-top: 50px;
   font-size: 48px;
   font-family: monospace;
   color: rgb(201, 85, 85);
@@ -44,20 +45,18 @@ p {
   cursor: pointer;
 }
 
-/* .enable {
-  padding: 7px;
-  border-radius: 4px;
-  color: #fff;
-  cursor: pointer;
-  background-color: rgb(66, 196, 44);
-} */
-
 /* ============================= */
 
 .log-btn {
   position: fixed;
   right: 20px;
-  top: 20px;
+  top: 10px;
+}
+
+.reg-btn {
+  position: fixed;
+  right: 130px;
+  top: 10px;
 }
 .login {
   display: flex;
@@ -119,4 +118,18 @@ p {
   background-color: rgb(201, 85, 85);
   color: #fff;
   font-weight: 700;
+}
+
+.serverComments {
+  font-size: 48px;
+  font-family: monospace;
+  color: rgb(201, 85, 85);
+  text-align: center;
+}
+
+.logout {
+  position: absolute;
+  top: 10px;
+  right: 0px;
+  margin-right: 20px;
 }

@@ -7,6 +7,8 @@ import '@pnotify/core/dist/BrightTheme.css';
 import debounce from 'lodash.debounce';
 import commentsPage from './template/commentsPage.hbs';
 import mainPage from './template/mainPage.hbs';
+import createForm from './template/createForm.hbs';
+import registrationForm from './template/registrationForm.hbs';
 
 const refs = {
   form: document.querySelector('.comment-form'),
@@ -16,6 +18,21 @@ const refs = {
   loginBtn: document.querySelector('.log-btn '),
   formBtn: document.querySelector('.submit-form'),
 };
+
+refs.form.addEventListener(
+  'submit',
+  debounce(sendRequest, 500, { leading: true, trailing: false }),
+  false,
+);
+window.addEventListener('load', renderComments);
+refs.commentsList.addEventListener('click', deleteComment);
+refs.loginBtn.addEventListener('click', openModalLog);
+document.querySelector('.reg-btn').addEventListener('click', openRegForm);
+
+let regModalEl;
+let modalEl;
+
+// ===================== sendComments ============================
 
 function sendComments(comment) {
   return fetch(
@@ -36,6 +53,8 @@ function sendComments(comment) {
     .then(addToLocal)
     .then(renderComments);
 }
+
+// ================== sendRequest ============================
 
 function sendRequest(e) {
   e.preventDefault();
@@ -66,11 +85,7 @@ function sendRequest(e) {
   sendComments(comment);
 }
 
-refs.form.addEventListener(
-  'submit',
-  debounce(sendRequest, 500, { leading: true, trailing: false }),
-  false,
-);
+// =========================== addToLocal =================================
 
 function addToLocal(comment) {
   const commentsArr = getCommentsFromLocal();
@@ -81,6 +96,8 @@ function addToLocal(comment) {
 function getCommentsFromLocal() {
   return JSON.parse(localStorage.getItem('comments') || '[]');
 }
+
+// ==================== renderComments ============================
 
 function renderComments() {
   const commentArr = getCommentsFromLocal();
@@ -99,13 +116,10 @@ function renderComments() {
   document.querySelector('.comments').innerHTML = markup;
 }
 
-// window.addEventListener('load', renderComments);
-
-refs.commentsList.addEventListener('click', deleteComment);
+// ==================== deleteComment ============================
 
 function deleteComment(e) {
-  if (e.target.nodeName !== 'BUTTON') {
-    console.log('heko');
+  if (e.target.localName !== 'button') {
     return;
   }
   const filteredComments = getCommentsFromLocal().filter(el => {
@@ -115,45 +129,36 @@ function deleteComment(e) {
   renderComments();
 }
 
-refs.loginBtn.addEventListener('click', openModalLog);
-
-let modalEl;
+// ========================= openModalLog ===========================
 function openModalLog() {
   modalEl = document.createElement('div');
   modalEl.classList.add('login');
-
-  // show modal
+  const formMarkup = createForm();
   mui.overlay('on', modalEl);
-
-  const formMarkup = `<h1 class="title">Sign In</h1>
-  <form class="modal-form" action="submit">
-  <label class="label">
-  <p>Login</p>
-  <input type="text" value="user@mail.com">
-  </label>
-  <label class="label">
-  <p>Password</p>
-  <input type="password" value="12345678">
-  </label>
-  <button class="button">Join</button>
-  </form>
-  `;
   modalEl.innerHTML = formMarkup;
-  document.querySelector('.modal-form').addEventListener('submit', onSubmitLog);
+  document
+    .querySelector('.modal-form')
+    .addEventListener('submit', onSubmitLog, { once: true });
 }
+
+//==================== onSubmitLog ===========================
 
 function onSubmitLog(e) {
   e.preventDefault();
   const email = e.target[0].value;
   const password = e.target[1].value;
-  loginUser(email, password).then(getData);
+  console.dir(password);
+
+  loginUser(email, password)
+    .then(getData)
+    .catch(error => error);
 }
 
+//==================== loginUser =================================
 function loginUser(email, password) {
   const API_KEY = 'AIzaSyCniRY8mOu8mbV8PRMWbZHKAGJrPGGPrL8';
   return fetch(
-    `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}
-`,
+    `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`,
     {
       method: 'POST',
       body: JSON.stringify({ email, password, returnSecureToken: true }),
@@ -165,6 +170,47 @@ function loginUser(email, password) {
     .then(resp => resp.json())
     .then(data => data.idToken);
 }
+
+// ============= openRefForm ==============
+
+function openRegForm() {
+  regModalEl = document.createElement('div');
+  regModalEl.classList.add('login');
+  const formMarkup = registrationForm();
+  regModalEl.innerHTML = formMarkup;
+  mui.overlay('on', regModalEl);
+  document
+    .querySelector('.modal-reg-form')
+    .addEventListener('submit', onSubmitReg, { once: true });
+}
+
+// ================= onSubmitReg =============
+
+function onSubmitReg(e) {
+  e.preventDefault();
+  const email = e.target[0].value;
+  const password = e.target[1].value;
+  regUser(email, password);
+}
+// ============= regUser ===================
+
+function regUser(email, password) {
+  const apiKey = 'AIzaSyCniRY8mOu8mbV8PRMWbZHKAGJrPGGPrL8';
+  return fetch(
+    `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ email, password, returnSecureToken: true }),
+      header: {
+        'content-type': 'application/json',
+      },
+    },
+  )
+    .then(resp => resp.json())
+    .then(data => data.idToken);
+}
+
+// ============= getData ===================
 
 function getData(token) {
   if (!token) {
@@ -182,6 +228,8 @@ function getData(token) {
     });
 }
 
+//=================== logOut ============================
+
 function logOut() {
   document.body.innerHTML = mainPage();
   document
@@ -190,8 +238,6 @@ function logOut() {
   document.querySelector('.log-btn').addEventListener('click', openModalLog);
   renderComments();
 
-  document.querySelector('.delete').addEventListener('click', e => {
-    console.log('hello');
-    deleteComment(e);
-  });
+  document.querySelector('.delete').addEventListener('click', deleteComment);
+  document.querySelector('.reg-btn').addEventListener('click', openRegForm);
 }
