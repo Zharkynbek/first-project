@@ -133,3 +133,9 @@ p {
   right: 0px;
   margin-right: 20px;
 }
+
+.comment {
+  background-color: rgb(201, 85, 85);
+  color: #fff;
+  font-size: 16px;
+}

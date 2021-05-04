@@ -21,8 +21,9 @@ const refs = {
 
 refs.form.addEventListener(
   'submit',
-  debounce(sendRequest, 500, { leading: true, trailing: false }),
-  false,
+  sendRequest,
+  // debounce(sendRequest, 500, { leading: true, trailing: false }),
+  // false,
 );
 window.addEventListener('load', renderComments);
 refs.commentsList.addEventListener('click', deleteComment);
@@ -155,6 +156,7 @@ function onSubmitLog(e) {
 }
 
 //==================== loginUser =================================
+
 function loginUser(email, password) {
   const API_KEY = 'AIzaSyCniRY8mOu8mbV8PRMWbZHKAGJrPGGPrL8';
   return fetch(
@@ -190,7 +192,13 @@ function onSubmitReg(e) {
   e.preventDefault();
   const email = e.target[0].value;
   const password = e.target[1].value;
-  regUser(email, password);
+  const repeatPassword = e.target[2].value;
+  if (password === repeatPassword) {
+    alert('vy uspeshno proshli registraciyu');
+    regUser(email, password);
+  } else {
+    alert('nevernyi parol');
+  }
 }
 // ============= regUser ===================
 
@@ -239,6 +247,6 @@ function logOut() {
   document.querySelector('.log-btn').addEventListener('click', openModalLog);
   renderComments();
   document.querySelector('.comments').addEventListener('click', deleteComment);
-  document.querySelector('.delete').addEventListener('click', deleteComment);
+  // document.querySelector('.delete').addEventListener('click', deleteComment);
   document.querySelector('.reg-btn').addEventListener('click', openRegForm);
 }
